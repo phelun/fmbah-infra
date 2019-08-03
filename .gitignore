@@ -9,7 +9,7 @@
 crash.log
 
 # keys 
-aws-eb 
+tf_asg-lb-ec/aws-eb 
 backend.tf
 
 # Ignore any .tfvars files that are generated automatically for each Terraform run. Most
