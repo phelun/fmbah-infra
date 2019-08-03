@@ -1,0 +1,20 @@
+---
+- hosts: all
+  tasks:
+
+  - name: Install python3
+    yum: "name={{ item }} state=installed"
+    become: yes
+    with_items:
+        - "@development-tools"
+        - centos-release-scl
+        - yum-utils
+        - git
+        - curl
+        - wget
+          #- https://centos7.iuscommunity.org/ius-release.rpm
+          #- python36u
+          #- python36u-pip
+          #- python36u-devel
+
+
