@@ -29,7 +29,7 @@ node('misc') {
       stage ('Spinup EKS') {
         if (ClusterAction == "ProvisionCluster"){
         echo "${seperator60}\n${seperator20} Spinning Up Cluster \n${seperator60}"
-            withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+            withCredentials([usernamePassword(credentialsId: 'cicd_token', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
               dir('tf_eks_cluster'){
                  sh """
                     terraform init
@@ -41,9 +41,10 @@ node('misc') {
         } else {
            if (ClusterAction == "DestroyCluster"){
              echo "${seperator60}\n${seperator20} Destroying Cluster \n${seperator60}"
-             withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+             withCredentials([usernamePassword(credentialsId: 'cicd-token', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
                dir('tf_eks_cluster'){
                 sh """
+                 terraform init
                  terraform destroy -force
                  """
                }   
