@@ -1,0 +1,59 @@
+#!/usr/bin/env groovy
+
+def seperator60 = '\u2739' * 60
+def seperator20 = '\u2739' * 20
+
+def job_name = "${env.JOB_NAME}"
+def job_number = "${env.JOB_NUMBER}"
+
+// PROVISION AND DESTROY PARAMETERS 
+properties([
+  parameters([
+   choice(
+     choices: "ProvisionCluster\nDestroyCluster"
+     name: "ClusterAction"
+   )  
+  ])
+])
+
+
+node('misc') {
+      stage ('Spinup EKS') {
+        
+
+        echo "${seperator60}\n${seperator20} Spinning Up Cluster \n${seperator60}"
+        withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+        sh """
+           cd ./jproject_101/br4u-terraform-infra/brexit4u-dev-django
+           terraform init
+           terraform plan -out=create.tfplan
+           terraform apply create.tfplan
+        """
+        }
+      }
+
+      stage ('View EKS'){
+           try {
+             timeout(time: 120, unit: 'MINUTES') {
+               input message: 'Proceed to next stage?'
+             }
+           }
+           catch (err) {
+               echo "Aborted by user!"
+               currentBuild.result = 'ABORTED'
+               error('Job Aborted')
+           }
+      }
+
+      stage ('Destroy instance'){
+        echo "${seperator60}\n${seperator20} Destroying Cluster \n${seperator60}"
+        withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+        sh """
+          cd ./jproject_101/br4u-terraform-infra/brexit4u-dev-django
+          terraform destroy -force
+        """
+        }
+      }
+
+}
+

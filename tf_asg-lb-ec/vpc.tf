@@ -3,7 +3,7 @@ data "aws_vpc" "default" {
   default = true
 }
 
-\ Networking bit
+# Networking bit
 data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.default.id
 }

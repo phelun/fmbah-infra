@@ -1,0 +1,1 @@
+kubectl rolling-update kubia-v1 kubia-v2 --image=luksa/kubia:v2 # Even though we did not have to create kubia-v2 RC, this comand does some magic
