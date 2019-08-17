@@ -52,18 +52,5 @@ node('misc') {
            }
         }
       }
-      stage ('View EKS'){
-           try {
-             timeout(time: 120, unit: 'MINUTES') {
-               input message: 'Proceed to next stage?'
-             }
-           }
-           catch (err) {
-               echo "Aborted by user!"
-               currentBuild.result = 'ABORTED'
-               error('Job Aborted')
-           }
-      }
-
 }
 
