@@ -11,7 +11,7 @@ properties([
   parameters([
    choice(
      description: "Determine cluster action",
-     choices: "ProvisionCluster\nDestroyCluster",
+     choices: "ProvisionCluster\nDestroyCluster\nUpdateCluster",
      name: "ClusterAction"
    ),  
   ])
@@ -34,7 +34,7 @@ node('misc') {
                  sh """
                     terraform init
                     terraform plan -out=create.tfplan
-                    //terraform apply create.tfplan
+                    terraform apply create.tfplan
                  """
               }
             }
