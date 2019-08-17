@@ -10,6 +10,7 @@ def job_number = "${env.JOB_NUMBER}"
 properties([
   parameters([
    choice(
+     description: "Determine cluster action" 
      choices: "ProvisionCluster\nDestroyCluster",
      name: "ClusterAction"
    ),  
@@ -18,18 +19,38 @@ properties([
 
 
 node('misc') {
+
+      stage ('Pull Repo') {
+        echo "${seperator60}\n${seperator20} Get Repository \n${seperator60}"
+        deleteDir()
+        checkout scm
+      }
+      
       stage ('Spinup EKS') {
+        if (ClusterAction == "ProvisionCluster"){
         echo "${seperator60}\n${seperator20} Spinning Up Cluster \n${seperator60}"
-        withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
-        sh """
-           cd ./jproject_101/br4u-terraform-infra/brexit4u-dev-django
-           terraform init
-           terraform plan -out=create.tfplan
-           terraform apply create.tfplan
-        """
+            withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+              dir('tf_eks_cluster'){
+                 sh """
+                    terraform init
+                    terraform plan -out=create.tfplan
+                    //terraform apply create.tfplan
+                 """
+              }
+            }
+        } else {
+           if (ClusterAction == "DestroyCluster"){
+             echo "${seperator60}\n${seperator20} Destroying Cluster \n${seperator60}"
+             withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+               dir('tf_eks_cluster'){
+                sh """
+                 terraform destroy -force
+                 """
+               }   
+             }
+           }
         }
       }
-
       stage ('View EKS'){
            try {
              timeout(time: 120, unit: 'MINUTES') {
@@ -41,16 +62,6 @@ node('misc') {
                currentBuild.result = 'ABORTED'
                error('Job Aborted')
            }
-      }
-
-      stage ('Destroy instance'){
-        echo "${seperator60}\n${seperator20} Destroying Cluster \n${seperator60}"
-        withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
-        sh """
-          cd ./jproject_101/br4u-terraform-infra/brexit4u-dev-django
-          terraform destroy -force
-        """
-        }
       }
 
 }
