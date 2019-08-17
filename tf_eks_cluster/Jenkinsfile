@@ -12,15 +12,13 @@ properties([
    choice(
      choices: "ProvisionCluster\nDestroyCluster"
      name: "ClusterAction"
-   )  
+   ),  
   ])
 ])
 
 
 node('misc') {
       stage ('Spinup EKS') {
-        
-
         echo "${seperator60}\n${seperator20} Spinning Up Cluster \n${seperator60}"
         withCredentials([usernamePassword(credentialsId: 'me_aws_id', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
         sh """
