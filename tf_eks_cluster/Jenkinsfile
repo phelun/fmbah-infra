@@ -10,7 +10,7 @@ def job_number = "${env.JOB_NUMBER}"
 properties([
   parameters([
    choice(
-     description: "Determine cluster action" 
+     description: "Determine cluster action",
      choices: "ProvisionCluster\nDestroyCluster",
      name: "ClusterAction"
    ),  
