@@ -1,7 +1,8 @@
 # LC 
 resource "aws_launch_configuration" "fm_lc" {
   #image_id       = "ami-06b41651a26fbba09" #Ubuntu
-  image_id        = "ami-07f511bbb843bdd9d"
+  #image_id        = "ami-07f511bbb843bdd9d"
+  image_id        = "ami-3548444c"
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.fm_sg.id]
   key_name        = "aws-eb"
