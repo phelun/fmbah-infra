@@ -42,5 +42,8 @@ F.Mbah
     └── vpc
 
 ```
-
+## So far: 
+    - Above structure has been used to deploy a staging webcluster with user data 
+    - Node still have public IPs associated with them :( 
+    - Next refactor and modularise the code for reusability in a prod environment 
 ## To Do:
