@@ -1,0 +1,7 @@
+project_key    = "terraform-frontend-tutorial"
+aws_region     = "ca-central-1"
+s3_bucket_name = "tutorial.brexit4u.com"
+s3_bucket_env  = "development"
+domain         = "brexit4u.com"
+subdomain      = "tutorial"
+hosted_zone    = "brexit4u.com"

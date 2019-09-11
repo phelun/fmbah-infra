@@ -30,6 +30,13 @@ resource "aws_security_group" "wp_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 4200
+    to_port     = 4200
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -47,7 +54,7 @@ variable "subnet_pub-1a" {
 
 variable "aws_profile" {
   description = "office or home profile" 
-  default     = "london" 
+  default     = "cooper" 
 }
 
 variable "my_vpc" {
