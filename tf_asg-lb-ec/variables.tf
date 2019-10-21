@@ -4,7 +4,7 @@ variable "server_port" {
 }
 
 variable "lb_port" {
-  default = 80 
+  default = 80
 }
 
 variable "ssh_port" {

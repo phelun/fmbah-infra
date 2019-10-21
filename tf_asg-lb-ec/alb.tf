@@ -1,9 +1,9 @@
 # ALB LOAD BALANCERS  
 resource "aws_lb" "fm_lb" {
   name               = "fm-alb"
-  subnets            = data.aws_subnet_ids.default.ids
+  subnets            = data.terraform_remote_state.vpc.outputs.public_subnets
   security_groups    = [aws_security_group.fm_sg.id]
-  load_balancer_type = "application" 
+  load_balancer_type = "application"
 
   tags = {
     Environment = "dev"
@@ -12,7 +12,7 @@ resource "aws_lb" "fm_lb" {
 
 resource "aws_lb_listener" "fm_lb_lst" {
   load_balancer_arn = aws_lb.fm_lb.arn
-  port              = var.lb_port  
+  port              = var.lb_port
   protocol          = "HTTP"
 
   # By default, return a simple 404 page
@@ -30,7 +30,7 @@ resource "aws_lb_target_group" "fm_lb_target" {
   name     = "fm-lb-target"
   port     = var.lb_port
   protocol = "HTTP"
-  vpc_id   = data.aws_vpc.default.id
+  vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
 
   health_check {
     path                = "/"
@@ -40,7 +40,7 @@ resource "aws_lb_target_group" "fm_lb_target" {
     timeout             = 3
     healthy_threshold   = 2
     unhealthy_threshold = 2
-  }  
+  }
 }
 
 resource "aws_lb_listener_rule" "fm_lb_lst_rule" {
