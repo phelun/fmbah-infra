@@ -51,8 +51,8 @@ RUN useradd -m -d /home/jenkins -s /bin/sh jenkins && echo "jenkins:jenkins" | c
 RUN usermod -aG docker jenkins
 EXPOSE 22
 
-RUN chmod 0777 /var/run/docker.sock
-RUN /var/run/docker.sock /var/run/docker.docker.sock
+# RUN chmod 0777 /var/run/docker.sock
+# RUN /var/run/docker.sock /var/run/docker.docker.sock
  
 # Default command
 CMD ["/usr/sbin/sshd", "-D"]
