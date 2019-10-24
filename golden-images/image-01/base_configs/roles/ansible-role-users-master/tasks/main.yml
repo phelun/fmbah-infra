@@ -1,0 +1,73 @@
+---
+- name: Keep some environment vars while using sudo
+  lineinfile:
+    dest: "/etc/sudoers"
+    line: "Defaults env_keep+={{ users_env_var_prefix }}*"
+    insertafter: EOF
+    state: present
+  when: users_env_var_prefix != ""
+
+- name: Ensure group admin exists
+  group:
+    name: admin
+    state: present
+
+- name: Add admin users with proper group assignment
+  user:
+    name: "{{ item.name }}"
+    state: present
+    groups: "admin"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+  with_items: "{{ administration_users }}"
+
+- name: Set authorized keys
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.key }}"
+  with_items: "{{ administration_users }}"
+
+- name: Add groups
+  group:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ local_groups }}"
+
+- name: Add local users
+  user:
+    name: "{{ item.name }}"
+    state: present
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    groups: "{{ item.groups | default([]) }}"
+  with_items: "{{ local_users }}"
+
+- name: Set authorized keys for local users
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.key }}"
+  with_items: "{{ local_users }}"
+
+- name: Allow sudo without passwords for admin group
+  lineinfile:
+    dest: "/etc/sudoers"
+    regexp: "^%admin"
+    line: "%admin ALL=(ALL) NOPASSWD:ALL"
+
+- name: Disable root login
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+  notify: reload sshd
+
+- name: Set www-data shell
+  user:
+    name: www-data
+    shell: /usr/sbin/nologin
+
+- name: Remove users
+  user:
+    name: "{{ item.name }}"
+    state: absent
+    remove: true
+  with_items: "{{ users_remove }}"
+  when: users_remove is defined

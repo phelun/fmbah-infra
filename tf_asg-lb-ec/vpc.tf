@@ -1,4 +1,17 @@
 # DATA SOURCE 
+#data "aws_ami" "fm_ami" {
+#  most_recent = true
+#  owners      = ["658951324167"] #
+
+#  filter {
+#    name = "name"
+
+#    values = [
+#      "ami-*",
+#    ]
+#  }
+#}
+
 data "aws_vpc" "default" {
   default = true
 }
@@ -13,8 +26,8 @@ resource "aws_security_group" "fm_sg" {
   name = "fm-sg-base"
 
   ingress {
-    from_port   = var.server_port
-    to_port     = var.server_port
+    from_port   = var.lb_port
+    to_port     = var.lb_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

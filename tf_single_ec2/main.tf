@@ -6,7 +6,7 @@ provider "aws" {
 resource "aws_security_group" "wp_sg" {
   name        = "wp-sg"
   description = "firewall rules"
-  vpc_id      = "${var.my_vpc}"
+  vpc_id      = "vpc-0562e891a15ca211a"
 
   # We might need other ports here as well based on dm team
   ingress {
@@ -49,7 +49,7 @@ resource "aws_security_group" "wp_sg" {
 #######################################################
 variable "subnet_pub-1a" {
   description = "Pub Subnet 1a"
-  default     = "subnet-00b939d42033da483"
+  default     = "subnet-08cc7694c91abab95"
 }
 
 variable "aws_profile" {
@@ -59,7 +59,7 @@ variable "aws_profile" {
 
 variable "my_vpc" {
   description = "home vpc"
-  default     = "vpc-03b4cead818dd6b39"
+  default     = "vpc-0562e891a15ca211a"
 }
 
 variable "k_pair" {
@@ -118,17 +118,31 @@ resource "aws_instance" "master" {
   #  ]
   #}
 
-  #connection {
-  #  type = "ssh"
-  #  user = "centos"
-  #  #private_key = "${file("dm-kliuch.pem")}"
-  #  private_key = "${file("aws-eb")}"
-  #  timeout = "3m"
-  #}
+  connection {
+    type = "ssh"
+    user = "centos"
+    #private_key = "${file("dm-kliuch.pem")}"
+    private_key = "${file("aws-eb.pem")}"
+    timeout = "3m"
+    host = "${self.public_ip}"
+  }
 
   #provisioner "local-exec" {
   #  command = "ansible-playbook -u centos -i '${self.public_ip},' --private-key ${var.k_pair} provision.yml" 
   #}
+
+  provisioner "file" {
+    source = "prerequisites.sh"
+    destination = "/tmp/prerequisites.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+       "chmod +x /tmp/prerequisites.sh",
+       "sudo /tmp/prerequisites.sh"
+    ]
+  }
+
 
   #tags {
   #  Name="${var.box_name}"

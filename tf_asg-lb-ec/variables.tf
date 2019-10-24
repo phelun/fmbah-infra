@@ -1,6 +1,6 @@
 # VARIABLES
 variable "server_port" {
-  default = 80
+  default = 8080
 }
 
 variable "lb_port" {

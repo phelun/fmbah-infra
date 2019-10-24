@@ -1,0 +1,13 @@
+---
+- hosts: all
+  tasks:
+  - name: Install nginx 
+    shell: "{{ item }}"
+    become: yes
+    with_items: 
+      - sudo yum install epel-release -y
+      - sudo yum install nginx -y
+      #- git clone https://github.com/dev-minds/dm_training_2019.git /tmp/
+      - sudo pwd | tee /tmp/location_so_far
+
+  

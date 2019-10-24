@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Install sshd package
+      apt:
+        name: openssh-server
+        state: present

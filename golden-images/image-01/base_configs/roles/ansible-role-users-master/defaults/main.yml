@@ -1,0 +1,6 @@
+---
+administration_users: ["deploy_admin"]
+local_users: ["fmbah"]
+local_groups: ["admin"]
+users_env_var_prefix: "devm"
+ci_build: false

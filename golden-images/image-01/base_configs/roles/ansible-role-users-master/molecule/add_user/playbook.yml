@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    ci_build: true
+    local_users:
+      - { name: "john", key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbjm6Hm0iUrOfHVVSMr0wJ8c/eUVekVDQ+hElmQOFtt8gI7/k0L0YrMBiH3QxJvSTShibRSJAwVQKMlxGSzkUHIngfRhLzmxj1tvN9vu79bj6ReWw3KIot8HATwL1GglJgeWPkujptXf8nFyvVoPl4I6wZsaWkkGLJ3274Av4FRJ8b+XVR1T/mAKBsTDQhfKUKiAkMDV00RWkmLs97rpTCjbEQkit610lkAb8sGHntbI4Pq7dt2S8w6PHDDWPsvgKObOupwtTyaHJeGbwybSv9x1o93VbTUw4VlSB6XUP66Pvheb/l9doIsI59LAbPc4pqIvkdz/7aV7Lrfs/cJ4vV john" }
+  roles:
+    - role: ansible-role-users
