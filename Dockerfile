@@ -45,6 +45,9 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
 RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
 
 RUN apt-get update -q \
+&& apt-get install maven 
+
+RUN apt-get update -q \
     && apt-get install docker-ce -y
 
 RUN useradd -m -d /home/jenkins -s /bin/sh jenkins && echo "jenkins:jenkins" | chpasswd
